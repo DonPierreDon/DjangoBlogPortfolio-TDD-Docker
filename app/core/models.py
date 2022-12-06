@@ -72,3 +72,18 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Milestone(models.Model):
+    """Create sections for project"""
+
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    hierarchycal_order = models.IntegerField()
+    order = models.IntegerField()
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='child', null=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='milestone')

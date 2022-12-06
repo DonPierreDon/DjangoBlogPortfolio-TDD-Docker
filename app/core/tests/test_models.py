@@ -80,3 +80,19 @@ class ModelTests(TestCase):
         tag = models.Tag.objects.create(user=user, name='Tag1')
 
         self.assertEqual(str(tag), tag.name)
+
+    def test_create_project_secions(self):
+        """Test creating a project section is successful."""
+
+        user = create_user()
+        project = models.Project.objects.create(
+            user=user,
+            title='Sample project name',
+            time_hours=50,
+            description='Sample project description',
+        )
+        project_section = models.Milestone.objects.create(user=user, title='Test', hierarchycal_order=1, order=1, project=project)
+
+        self.assertEqual(1, project_section.hierarchycal_order)
+        self.assertEqual(1, project_section.order)
+        self.assertEqual(project, project_section.project)
