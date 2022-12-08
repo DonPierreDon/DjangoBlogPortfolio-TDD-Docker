@@ -11,6 +11,7 @@ from rest_framework.permissions import IsAuthenticated
 from core.models import (
     Project,
     Tag,
+    Milestone,
 )
 from project import serializers
 
@@ -27,7 +28,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
         return self.queryset.filter(user=self.request.user).order_by('-id')
 
     def get_serialize_class(self):
-        """Retuurn the serializer class for requests."""
+        """Return the serializer class for requests."""
         if self.action == 'list':
             return serializers.ProjectSerializer
 
@@ -51,4 +52,6 @@ class TagViewSet(mixins.DestroyModelMixin,
     def get_queryset(self):
         """Filter queryset to autheticated user."""
         return self.queryset.filter(user=self.request.user).order_by('-name')
+
+
 

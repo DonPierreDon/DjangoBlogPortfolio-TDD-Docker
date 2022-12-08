@@ -10,6 +10,7 @@ from rest_framework.test import APIClient
 from core.models import (
     Project,
     Tag,
+    Milestone,
 )
 
 from project.serializers import (
@@ -290,3 +291,44 @@ class PrivateProjectApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(project.tags.count(), 0)
+
+    def test_create_project_with_new_milestones(self):
+        """Test creating recipe with milestones"""
+
+        payload = {
+            'title': 'Test',
+            'time_hours': 10,
+            'milestones': [
+                {
+                'title': 'FirstMilestone',
+                'hierarchycal_order': 1,
+                'order': 1
+                },
+                {
+                'title': 'FirstMilestoneSub',
+                'hierarchycal_order': 1,
+                'order': 2
+                },
+                {
+                'title': 'SecondMilestone',
+                'hierarchycal_order': 2,
+                'order': 1
+                }
+            ],
+        }
+        res = self.client.post(PROJECTS_URL, payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        projects = Project.objects.filter(user=self.user)
+        self.assertEqual(projects.count(), 1)
+        project = projects[0]
+        self.assertEqual(projects.milestones.count(), 3)
+        for milestone in payload['milestones']:
+            exists = project.milestones.filter(
+                title=milestone['title'],
+                hierarchycal_order=milestone['hierarchycal_order'],
+                order=milestone['order'],
+                user=self.user,
+            ).exists()
+            self.assertTrue(exists)
+

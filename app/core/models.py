@@ -55,7 +55,7 @@ class Project(models.Model):
     description = models.TextField(blank=True)
     time_hours = models.IntegerField()
     link = models.CharField(max_length=255, blank=True)
-    tags = models.ManyToManyField('Tag')
+    tags = models.ManyToManyField('Tag', blank=True, related_name='projects')
 
     def __str__(self):
         return self.title
@@ -78,12 +78,12 @@ class Milestone(models.Model):
     """Create sections for project"""
 
     title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    description = models.TextField(null=True, blank=True)
     hierarchycal_order = models.IntegerField()
     order = models.IntegerField()
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='child', null=True)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='milestone')
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='child', null=True, blank=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='milestones')
