@@ -59,11 +59,8 @@ class ProjectSerializer(serializers.ModelSerializer):
             )
             project.milestones.add(milestone_obj)
 
-
     def create(self, validated_data):
         """Create a project."""
-
-        print('test')
         milestones = validated_data.pop('milestones', [])
         tags = validated_data.pop('tags', [])
         project = Project.objects.create(**validated_data)
@@ -84,6 +81,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
 
 class ProjectDetailSerializer(ProjectSerializer):
     """Serializer for project detail view."""

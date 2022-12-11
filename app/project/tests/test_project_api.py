@@ -10,29 +10,30 @@ from rest_framework.test import APIClient
 from core.models import (
     Project,
     Tag,
-    Milestone,
 )
 
 from project.serializers import (
-    ProjectSerializer,
     ProjectDetailSerializer,
 )
+
 
 PROJECTS_URL = reverse('project:project-list')
 
 
 def detail_url(project_id):
     """Create and return a project detail URL."""
+
     return reverse('project:project-detail', args=[project_id])
 
 
 def create_user(**params):
-    # create and return a new user.
+    """create and return a new user."""
 
     return get_user_model().objects.create_user(**params)
 
+
 def create_project(user, **params):
-    # Create and return a sample project.
+    """ Create and return a sample project. """
 
     defaults = {
         'title': 'Sample project title',
@@ -82,7 +83,7 @@ class PrivateProjectApiTests(TestCase):
         self.assertEqual(res.data, serializer.data)
 
     def test_project_list_limited_to_user(self):
-        # Test list of projects is limited to authenticated user.
+        """ Test list of projects is limited to authenticated user. """
 
         other_user = create_user(email='other@example.com', password='test123')
         create_project(user=other_user)
@@ -96,7 +97,7 @@ class PrivateProjectApiTests(TestCase):
         self.assertEqual(res.data, serializer.data)
 
     def test_get_project_detail(self):
-        #test get project detail.
+        """test get project detail. """
 
         project = create_project(user=self.user)
 
@@ -107,7 +108,7 @@ class PrivateProjectApiTests(TestCase):
         self.assertEqual(res.data, serializer.data)
 
     def test_create_project(self):
-        # Test creating a project.
+        """ Test creating a project. """
 
         payload = {
             'title': 'Sample project',
@@ -122,7 +123,7 @@ class PrivateProjectApiTests(TestCase):
         self.assertEqual(project.user, self.user)
 
     def test_partial_update(self):
-        # test partial update of a project.
+        """ test partial update of a project. """
 
         original_link = 'https://example.com/project.pdf'
         project = create_project(
@@ -142,7 +143,7 @@ class PrivateProjectApiTests(TestCase):
         self.assertEqual(project.user, self.user)
 
     def test_full_update(self):
-        # test full update of project.
+        """ test full update of project. """
 
         project = create_project(
             user=self.user,
@@ -167,7 +168,7 @@ class PrivateProjectApiTests(TestCase):
         self.assertEqual(project.user, self.user)
 
     def test_update_user_return_error(self):
-        # Test changing the project user results in an error.
+        """ Test changing the project user results in an error."""
 
         new_user = create_user(email='user2@example.com', password='test123')
         project = create_project(user=self.user)
@@ -180,7 +181,7 @@ class PrivateProjectApiTests(TestCase):
         self.assertEqual(project.user, self.user)
 
     def test_delete_project(self):
-        # Test deleting a project successful.
+        """Test deleting a project successful."""
 
         project = create_project(user=self.user)
 
@@ -201,7 +202,6 @@ class PrivateProjectApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_404_NOT_FOUND)
         self.assertTrue(Project.objects.filter(id=project.id).exists())
-
 
     def test_create_project_with_new_tags(self):
         """ Test creating a new project with new tags."""
@@ -228,7 +228,10 @@ class PrivateProjectApiTests(TestCase):
     def test_create_project_with_existing_tags(self):
         """Test creating a project with existing tags."""
 
-        tag_improvment = Tag.objects.create(user=self.user, name='Self-Improvment')
+        tag_improvment = Tag.objects.create(
+            user=self.user,
+            name='Self-Improvment'
+        )
         payload = {
             'title': 'Self-improvment app',
             'time_hours': 60,
@@ -300,19 +303,19 @@ class PrivateProjectApiTests(TestCase):
             'time_hours': 10,
             'milestones': [
                 {
-                'title': 'FirstMilestone',
-                'hierarchycal_order': 1,
-                'order': 1
+                    'title': 'FirstMilestone',
+                    'hierarchycal_order': 1,
+                    'order': 1
                 },
                 {
-                'title': 'FirstMilestoneSub',
-                'hierarchycal_order': 1,
-                'order': 2
+                    'title': 'FirstMilestoneSub',
+                    'hierarchycal_order': 1,
+                    'order': 2
                 },
                 {
-                'title': 'SecondMilestone',
-                'hierarchycal_order': 2,
-                'order': 1
+                    'title': 'SecondMilestone',
+                    'hierarchycal_order': 2,
+                    'order': 1
                 }
             ],
         }
@@ -331,4 +334,3 @@ class PrivateProjectApiTests(TestCase):
                 user=self.user,
             ).exists()
             self.assertTrue(exists)
-

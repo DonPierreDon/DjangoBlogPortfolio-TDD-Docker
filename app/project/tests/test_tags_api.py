@@ -10,13 +10,13 @@ from rest_framework.test import APIClient
 
 from core.models import (
     Tag,
-    Project,
 )
 
 from project.serializers import TagSerializer
 
 
 TAGS_URL = reverse('project:tag-list')
+
 
 def detail_url(tag_id):
     """Create and return a tag detail url."""
@@ -65,8 +65,6 @@ class PrivateTagsApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, serializer.data)
 
-
-
     def test_tags_limited_to_user(self):
         """Test list of tags is limitted to authenticated user."""
 
@@ -105,5 +103,3 @@ class PrivateTagsApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         tags = Tag.objects.filter(user=self.user)
         self.assertFalse(tags.exists())
-
-

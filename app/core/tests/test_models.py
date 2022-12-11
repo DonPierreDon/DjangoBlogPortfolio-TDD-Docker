@@ -2,8 +2,6 @@
 Tests for models.
 """
 
-from decimal import Decimal
-
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
@@ -91,7 +89,12 @@ class ModelTests(TestCase):
             time_hours=50,
             description='Sample project description',
         )
-        project_section = models.Milestone.objects.create(user=user, title='Test', hierarchycal_order=1, order=1, project=project)
+        project_section = models.Milestone.objects.create(
+            user=user, title='Test',
+            hierarchycal_order=1,
+            order=1,
+            project=project
+        )
 
         self.assertEqual(1, project_section.hierarchycal_order)
         self.assertEqual(1, project_section.order)

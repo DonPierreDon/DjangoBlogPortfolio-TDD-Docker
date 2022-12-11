@@ -11,7 +11,6 @@ from rest_framework.permissions import IsAuthenticated
 from core.models import (
     Project,
     Tag,
-    Milestone,
 )
 from project import serializers
 
@@ -52,6 +51,3 @@ class TagViewSet(mixins.DestroyModelMixin,
     def get_queryset(self):
         """Filter queryset to autheticated user."""
         return self.queryset.filter(user=self.request.user).order_by('-name')
-
-
-

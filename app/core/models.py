@@ -83,9 +83,13 @@ class Milestone(models.Model):
     order = models.IntegerField()
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE
     )
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='milestones')
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='milestones'
+    )
 
     def __str__(self):
         return self.title

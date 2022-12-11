@@ -43,16 +43,20 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
 
+
 class MilestoneInline(admin.TabularInline):
     model = models.Milestone
 
+
 class TagInline(admin.TabularInline):
     model = models.Project.tags.through
+
 
 class ProjectAdmin(admin.ModelAdmin):
     inlines = [
         MilestoneInline,
     ]
+
 
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Project, ProjectAdmin)
