@@ -322,7 +322,7 @@ class PrivateProjectApiTests(TestCase):
         projects = Project.objects.filter(user=self.user)
         self.assertEqual(projects.count(), 1)
         project = projects[0]
-        self.assertEqual(projects.milestones.count(), 3)
+        self.assertEqual(project.milestones.count(), 3)
         for milestone in payload['milestones']:
             exists = project.milestones.filter(
                 title=milestone['title'],

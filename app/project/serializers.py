@@ -19,12 +19,12 @@ class TagSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
-class MilestoneSerializer(serializers.Serializer):
+class MilestoneSerializer(serializers.ModelSerializer):
     """Serializer for milestones of projects"""
 
     class Meta:
         model = Milestone
-        fields = '__all__'
+        fields = ['title', 'hierarchycal_order', 'order']
         read_only_fields = ['id']
 
 
@@ -52,12 +52,13 @@ class ProjectSerializer(serializers.ModelSerializer):
         """Handle creating milestones as needed."""
         auth_user = self.context['request'].user
         for milestone in milestones:
-            milestone_obj, created = Milestone.objects.create(
+            milestone_obj = Milestone.objects.create(
                 user=auth_user,
                 project=project,
                 **milestone,
             )
             project.milestones.add(milestone_obj)
+
 
     def create(self, validated_data):
         """Create a project."""
@@ -88,4 +89,3 @@ class ProjectDetailSerializer(ProjectSerializer):
 
     class Meta(ProjectSerializer.Meta):
         fields = ProjectSerializer.Meta.fields + ['description']
-

@@ -85,5 +85,7 @@ class Milestone(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='child', null=True, blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='milestones')
+
+    def __str__(self):
+        return self.title
