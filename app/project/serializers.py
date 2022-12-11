@@ -63,6 +63,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """Create a project."""
 
+        print('test')
         milestones = validated_data.pop('milestones', [])
         tags = validated_data.pop('tags', [])
         project = Project.objects.create(**validated_data)
