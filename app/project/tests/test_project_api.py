@@ -337,12 +337,10 @@ class PrivateProjectApiTests(TestCase):
             ).exists()
             self.assertTrue(exists)
 
-
     def test_milestone_add_on_update(self):
         """Tets creatin tag when updationg a project."""
 
         project = create_project(user=self.user)
-
         payload = {
             'milestones': [
                 {
@@ -370,7 +368,10 @@ class PrivateProjectApiTests(TestCase):
         res = self.client.patch(url, payload, format='json')
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        new_milestone = Milestone.objects.get(user=self.user, title='FirstMilestone')
+        new_milestone = Milestone.objects.get(
+            user=self.user,
+            title='FirstMilestone'
+        )
         self.assertIn(new_milestone, project.milestones.all())
         for milestone in payload['milestones']:
             exists = project.milestones.filter(
@@ -381,4 +382,3 @@ class PrivateProjectApiTests(TestCase):
                 user=self.user,
             ).exists()
             self.assertTrue(exists)
-

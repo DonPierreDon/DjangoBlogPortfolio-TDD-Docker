@@ -9,7 +9,7 @@ from core.models import (
     Milestone
 )
 
-
+from rest_flex_fields import FlexFieldsModelSerializer
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -21,19 +21,23 @@ class TagSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
-class MilestoneSerializer(serializers.ModelSerializer):
+class MilestoneSerializer(FlexFieldsModelSerializer):
     """Serializer for milestones of projects"""
 
     class Meta:
         model = Milestone
-        fields = ['title', 'hierarchycal_order', 'order']
+        fields = ['title', 'hierarchycal_order', 'order', 'description']
         read_only_fields = ['id']
 
 
-class ProjectSerializer(serializers.ModelSerializer):
+class ProjectSerializer(FlexFieldsModelSerializer):
     """Serializer for projects"""
     tags = TagSerializer(many=True, required=False)
-    milestones = MilestoneSerializer(many=True, required=False)
+    milestones = MilestoneSerializer(
+        many=True,
+        required=False,
+        fields=['title', 'hierarchycal_order', 'order']
+    )
 
     class Meta:
         model = Project
@@ -92,7 +96,11 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 class ProjectDetailSerializer(ProjectSerializer):
     """Serializer for project detail view."""
+    milestones = MilestoneSerializer(
+        many=True,
+        required=False,
+        fields=['title', 'hierarchycal_order', 'order', 'description']
+    )
 
     class Meta(ProjectSerializer.Meta):
-        milestones = MilestoneSerializer(many=True, required=False,)
         fields = ProjectSerializer.Meta.fields + ['description']
