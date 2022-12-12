@@ -10,6 +10,8 @@ from core.models import (
 )
 
 
+
+
 class TagSerializer(serializers.ModelSerializer):
     """Serializer for tags"""
 
@@ -72,9 +74,14 @@ class ProjectSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         """Update Project"""
         tags = validated_data.pop('tags', None)
+        milestones = validated_data.pop('milestones', None)
         if tags is not None:
             instance.tags.clear()
             self._get_or_create_tags(tags, instance)
+
+        if milestones is not None:
+            instance.milestones.clear()
+            self._create_milestones(milestones, instance)
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -87,4 +94,5 @@ class ProjectDetailSerializer(ProjectSerializer):
     """Serializer for project detail view."""
 
     class Meta(ProjectSerializer.Meta):
+        milestones = MilestoneSerializer(many=True, required=False,)
         fields = ProjectSerializer.Meta.fields + ['description']

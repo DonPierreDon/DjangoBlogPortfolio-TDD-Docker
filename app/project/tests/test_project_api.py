@@ -10,6 +10,7 @@ from rest_framework.test import APIClient
 from core.models import (
     Project,
     Tag,
+    Milestone,
 )
 
 from project.serializers import (
@@ -305,7 +306,8 @@ class PrivateProjectApiTests(TestCase):
                 {
                     'title': 'FirstMilestone',
                     'hierarchycal_order': 1,
-                    'order': 1
+                    'order': 1,
+                    'description': 'Sample description'
                 },
                 {
                     'title': 'FirstMilestoneSub',
@@ -334,3 +336,49 @@ class PrivateProjectApiTests(TestCase):
                 user=self.user,
             ).exists()
             self.assertTrue(exists)
+
+
+    def test_milestone_add_on_update(self):
+        """Tets creatin tag when updationg a project."""
+
+        project = create_project(user=self.user)
+
+        payload = {
+            'milestones': [
+                {
+                    'title': 'FirstMilestone',
+                    'hierarchycal_order': 1,
+                    'order': 1,
+                    'description': 'Sample description'
+                },
+                {
+                    'title': 'FirstMilestoneSub',
+                    'hierarchycal_order': 1,
+                    'order': 2,
+                    'description': 'Sample description'
+                },
+                {
+                    'title': 'SecondMilestone',
+                    'hierarchycal_order': 2,
+                    'order': 1,
+                    'description': 'Sample description'
+                }
+            ],
+        }
+        url = detail_url(project.id)
+
+        res = self.client.patch(url, payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        new_milestone = Milestone.objects.get(user=self.user, title='FirstMilestone')
+        self.assertIn(new_milestone, project.milestones.all())
+        for milestone in payload['milestones']:
+            exists = project.milestones.filter(
+                title=milestone['title'],
+                hierarchycal_order=milestone['hierarchycal_order'],
+                order=milestone['order'],
+                description=milestone['description'],
+                user=self.user,
+            ).exists()
+            self.assertTrue(exists)
+

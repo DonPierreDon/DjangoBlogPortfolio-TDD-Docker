@@ -88,7 +88,8 @@ class Milestone(models.Model):
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
-        related_name='milestones'
+        related_name='milestones',
+        null=True
     )
 
     def __str__(self):
